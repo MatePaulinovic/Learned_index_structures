@@ -26,6 +26,8 @@ class DataPreper():
         
         batch = 10000
         
+        print("Imam za obraditi {}  recrods".format(len(records)))
+        
         for r in records:
             k = 15
             offset = 0
@@ -33,8 +35,8 @@ class DataPreper():
             while offset < len(r.seq):
         
                 kmers = self.generate_kmers(k, r.seq[offset : offset + batch + k - 1])
-                print("Offset {}".format(offset))
-                print("num of kmers: {}".format(len(kmers)))
+                #print("Offset {}".format(offset))
+                #print("num of kmers: {}".format(len(kmers)))
                 kmer_hash = []
                 for kmer in kmers:
                     kmer_hash.append((kmer, self.hash_kmer(kmer)))
