@@ -26,10 +26,10 @@ class DataPreper():
         
         batch = 10000
         
-        print("Imam za obraditi {}  recrods".format(len(records)))
+        #print("Imam za obraditi {}  recrods".format(len(records)))
         
         for r in records:
-            k = 15
+            k = 16
             offset = 0
 
             while offset < len(r.seq):
@@ -39,12 +39,12 @@ class DataPreper():
                 #print("num of kmers: {}".format(len(kmers)))
                 kmer_hash = []
                 for kmer in kmers:
-                    kmer_hash.append((kmer, self.hash_kmer(kmer)))
+                    kmer_hash.append((self.encode_nucleotides(kmer), self.hash_kmer(kmer)))
              
                 destName = destination + r.id + ".txt"
                 f = open(destName, "a+")
                 for k_h in kmer_hash:
-                    f.write("{kmer}\t{value}\n".format(kmer=k_h[0], value=k_h[1]))
+                    f.write("{kmer},{value}\n".format(kmer=k_h[0], value=k_h[1]))
                 f.close()
            
                 offset += batch
@@ -63,6 +63,14 @@ class DataPreper():
         
         return kmers
         
+    
+    def encode_nucleotides(self, kmer):
+        result = ""
+        for n in kmer:
+            result += str(self.hash_value(n))
+        
+        return result
+
     
     def hash_kmer(self, kmer):
         k = len(kmer)
