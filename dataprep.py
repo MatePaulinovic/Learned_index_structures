@@ -28,15 +28,18 @@ class DataPreper():
         
         #print("Imam za obraditi {}  recrods".format(len(records)))
         
+        ####
+        counter = 1
+        #####
+        
         for r in records:
             k = 16
             offset = 0
-
+        
             while offset < len(r.seq):
         
                 kmers = self.generate_kmers(k, r.seq[offset : offset + batch + k - 1])
-                #print("Offset {}".format(offset))
-                #print("num of kmers: {}".format(len(kmers)))
+                
                 kmer_hash = []
                 for kmer in kmers:
                     kmer_hash.append((self.encode_nucleotides(kmer), self.hash_kmer(kmer)))
@@ -48,10 +51,12 @@ class DataPreper():
                 f.close()
            
                 offset += batch
-    
+        
+            print("Completed file" + str(counter) + "/" + str(len(records)))
+            counter += 1
             
         ###REST
-        return "NAPISAH"
+     
         
     def generate_kmers(self, k, sequence):
         if k <= 0:

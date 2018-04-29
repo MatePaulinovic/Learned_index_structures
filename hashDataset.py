@@ -4,17 +4,18 @@
 """
 
 import torch
+import torch.utils.data
 import numpy
 
-class HashDataset(torch.utils.data.Dataset):
+class HashDataset(torch.utils.data.dataset.Dataset):
     
     
     __xs = []
     __ys = []
     
     
-    def __init__(self, root_dir, transform=None):
-        self.transform = transform
+    def __init__(self, root_dir, M=1000):
+        self.M = M
         
         with open(root_dir + "data.txt") as f:
             for line in f:
@@ -35,3 +36,14 @@ class HashDataset(torch.utils.data.Dataset):
         value = torch.from_numpy(numpy.asarray(value).reshape([1,1]))
         
         return kmer, value
+    
+    
+    def __len__(self):
+        return len(self.__xs)
+    
+
+    def transform(self, value):
+        val = int(value)
+        
+        return (val % self.M) / self.M
+    
