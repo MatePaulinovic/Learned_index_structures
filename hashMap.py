@@ -25,6 +25,11 @@ class HashMap:
         key_index = self.hash_kmer(key) % self.size
         bucket = self.table[key_index]
         
+        if bucket:
+            self.collisions += 1
+        else:
+            self.filled_slots += 1
+            
         bucket = list(filter(lambda t: t[0] != key, bucket))
         bucket.append((key, value))
         
@@ -33,13 +38,13 @@ class HashMap:
         key_index = self.hash_kmer(key) % self.size
         bucket = self.table[key_index]
         
-        for k,v in bucker:
+        for k,v in bucket:
             if k == key:
-                return value
+                return v
             
         return None
         
-    def hash_kmer(self, key):
+    def hash_kmer(self, kmer):
         k = len(kmer)
         hash_value = 0
         

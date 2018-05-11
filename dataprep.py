@@ -35,23 +35,22 @@ class DataPreper():
         for r in records:
             k = 16
             offset = 0
-        
-            while offset < len(r.seq):
-        
-                kmers = self.generate_kmers(k, r.seq[offset : offset + batch + k - 1])
+            l = len(r.seq)
+            
+            kmer = r.seq[0:k]
+            encoded_kmer = self.encode_nucleotides(kmer)
+            hash_val = self.hash_nucleotides(encoded_kmer)
+            index = k
+            
+            destName = destination + r.id + ".txt"
+            f = open(destName, "a+")
+            while index < l:
+               f.write("{kmer},{value}\n".format(kmer=encoded_kmer, value=hash_val))
+               encoded_kmer = self.encode_nucleotides_fast(encoded_kmer, r.seq, index)
+               hash_val = self.hash_nucleotides_fast(hash_val, r.seq, index, k)
+               index += 1
+            f.close()
                 
-                kmer_hash = []
-                for kmer in kmers:
-                    kmer_hash.append((self.encode_nucleotides(kmer), self.hash_kmer(kmer)))
-             
-                destName = destination + r.id + ".txt"
-                f = open(destName, "a+")
-                for k_h in kmer_hash:
-                    f.write("{kmer},{value}\n".format(kmer=k_h[0], value=k_h[1]))
-                f.close()
-           
-                offset += batch
-        
             print("Completed file" + str(counter) + "/" + str(len(records)))
             counter += 1
             
@@ -64,10 +63,18 @@ class DataPreper():
         
         kmers = []
         for i in range(0, len(sequence) - k + 1):
+            kmer = sequence[i:i + k]
+            if 'N' in kmer:
+                continue
+            
             kmers.append(sequence[i:i + k])
         
         return kmers
         
+    
+    def encode_nucleotides_fast(self, kmer, sequence, index):
+        return kmer[1:] + str(self.hash_value(sequence[index]))
+
     
     def encode_nucleotides(self, kmer):
         result = ""
@@ -76,7 +83,21 @@ class DataPreper():
         
         return result
 
+    def hash_nucleotides_fast(self, prev_hash, sequence, index, k):
+        tmp = prev_hash - pow(4, k - 1) * self.hash_value(sequence[index - k])
+        tmp *= 4
+        tmp += self.hash_value(sequence[index])
+        
+        return tmp
     
+    def hash_nucleotides(self, seq):
+        k = len(seq)
+        hash_value = 0
+        for i in range(0, k):
+            hash_value += pow(4, k - i - 1) * int(seq[i])
+            
+        return hash_value
+        
     def hash_kmer(self, kmer):
         k = len(kmer)
         hash_value = 0

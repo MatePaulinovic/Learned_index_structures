@@ -56,17 +56,19 @@ class FastaParser():
                     print('Its sequence contains {} nucleotides.'.format(amount_of_nucleotides))
             
                     records.append(record)
-          
                     
-    
+                  
+          
+            self.records = records
             self.numOfRecords = len(records)
             return records
         
         except IOError as e:
             pass
         
-        
-#p = FastaParser()
-#p.read_input('./data/GrCh37.fna')
-
-#readInput('./data/GrCh37.fna', None)
+"""       
+p = FastaParser()
+p.read_input('./data/GrCh37.fna')
+for r in p.records:
+    print('A' in r.seq or 'C' in r.seq or 'T' in r.seq or 'G' in r.seq)
+"""

@@ -17,9 +17,9 @@ class HashDataset(torch.utils.data.dataset.Dataset):
     def __init__(self, root_dir, M=1000):
         self.M = M
         
-        with open(root_dir + "data.txt") as f:
+        with open(root_dir) as f:
             for line in f:
-                parts = line.split("\t")
+                parts = line.split(",")
                 self.__xs.append(parts[0])
                 self.__ys.append(parts[1])
                 

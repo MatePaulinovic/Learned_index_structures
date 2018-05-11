@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Apr 12 12:57:09 2018
-
 @author: matep
 """
 
