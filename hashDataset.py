@@ -14,10 +14,10 @@ class HashDataset(torch.utils.data.dataset.Dataset):
     __ys = []
     
     
-    def __init__(self, root_dir, M=1000):
+    def __init__(self, source, M=1000):
         self.M = M
-        
-        with open(root_dir) as f:
+            
+        with open(source) as f:
             for line in f:
                 parts = line.split(",")
                 self.__xs.append(parts[0])
@@ -32,14 +32,14 @@ class HashDataset(torch.utils.data.dataset.Dataset):
             value = self.transform(value)
         
         #transform to pytorch tensors
-        kmer = torch.from_numpy(numpy.asarray(list(map(int, kmer))))
-        value = torch.from_numpy(numpy.asarray(value).reshape([1,1]))
+        kmer = torch.from_numpy(numpy.asarray(list(map(int, kmer)), dtype=numpy.float32))
+        value = torch.from_numpy(numpy.asarray(value, dtype=numpy.float32).reshape([1,1]))
         
         return kmer, value
     
     
     def __len__(self):
-        return len(self.__xs)
+        return len(self.__xs) 
     
 
     def transform(self, value):
