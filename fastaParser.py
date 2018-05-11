@@ -28,7 +28,7 @@ class FastaParser():
         internal  variables. Supported fasta file extensions are: 
         (".fna", ".fasta", ".fas", ".fa", ".seq", ".fsa", ".ffn", ".frn")
         """
-        #path = './data/GrCh37.fna'
+        #path = './data/GRCh37.fna'
         
         if not path.endswith((".fna", ".fasta", ".fas", ".fa", ".seq", ".fsa", ".ffn", ".frn")):
             raise InvalidFormatError("File is of unsupported type")
@@ -64,6 +64,7 @@ class FastaParser():
             return records
         
         except IOError as e:
+            print("FAILED")
             pass
         
 """       

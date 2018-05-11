@@ -30,8 +30,8 @@ class DataPreper():
         
         ####
         counter = 1
-        #####
-        
+        ##### 
+
         for r in records:
             k = 16
             offset = 0
@@ -112,4 +112,4 @@ class DataPreper():
 
 
 dp = DataPreper()
-dp.prepare_file('./data/GrCh37.fna', './data/training_set/')
+dp.prepare_file('./data/GRCh38.fna', './data/training_set/GRCh38/')
