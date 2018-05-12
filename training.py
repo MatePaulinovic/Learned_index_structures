@@ -11,28 +11,22 @@ from torch.autograd import Variable
 # D_in = input dimension
 # H = hidden dimension
 # D_out = output dimension
-N, D_in, H, D_out = 100, 16, 8, 1
+N, D_in, H, D_out = 128, 16, 8, 1
 # M = hash table size
 M = 1000
-#READ INPUTS IN x
-#
-dataset = Hds.HashDataset("./data/training_set/NT_113878.1.txt", 1000)
+
+dataset = Hds.HashDataset("./data/training_set/NT_113878.1.txt", M)
 
 train_loader = torch.utils.data.DataLoader(dataset, batch_size=N, shuffle=True, drop_last=False, num_workers=0)
 print("Loaded dataset")
 
-#x = Variable(torch.randn(N, D_in))
-#y = Variable(torch.randn(N, D_out))
-#READ OUTPUTS IN Y
-
 model = Net.HashNet(D_in, H, D_out)
 
-criterion = torch.nn.MSELoss(size_average=False)
+criterion = torch.nn.MSELoss(size_average=True)
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-5)
 
 
 model.train()
-print("Idem u petlju")
 for batch_idx, (data, target) in enumerate(train_loader):
     #data, target = data.cuda(async=True), target.cuda(async=True) # On GPU
     data, target = Variable(data), Variable(target)
@@ -41,6 +35,7 @@ for batch_idx, (data, target) in enumerate(train_loader):
     
     optimizer.zero_grad()
     output = model(data)
+    #print("Output: {}, target: {}".format(output, target))
     loss = criterion(output, target)
     loss.backward()
     optimizer.step()
@@ -50,6 +45,15 @@ for batch_idx, (data, target) in enumerate(train_loader):
                 100. * batch_idx / len(train_loader), loss.data[0]))
 
 """
+
+x = Variable(torch.randn(N, D_in))
+y = Variable(torch.randn(N, D_out))
+
+model = Net.HashNet(D_in, H, D_out)
+
+criterion = torch.nn.MSELoss(size_average=True)
+optimizer = torch.optim.SGD(model.parameters(), lr=1e-5)
+
 for t in range(500):
     
     y_pred = model(x)
@@ -60,6 +64,6 @@ for t in range(500):
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
+
 """
-    
 print("Done")

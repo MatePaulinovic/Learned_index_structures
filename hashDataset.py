@@ -14,9 +14,13 @@ class HashDataset(torch.utils.data.dataset.Dataset):
     __ys = []
     
     
-    def __init__(self, source, M=1000):
+    def __init__(self, source, M=1000, cuda=False):
         self.M = M
-            
+        if cuda:
+            self.dtype = torch.cuda.FloatTensor
+        else:
+            self.dtype = torch.FloatTensor
+        
         with open(source) as f:
             for line in f:
                 parts = line.split(",")
@@ -34,6 +38,8 @@ class HashDataset(torch.utils.data.dataset.Dataset):
         #transform to pytorch tensors
         kmer = torch.from_numpy(numpy.asarray(list(map(int, kmer)), dtype=numpy.float32))
         value = torch.from_numpy(numpy.asarray(value, dtype=numpy.float32).reshape([1,1]))
+        kmer = kmer.type(self.dtype)
+        value = value.type(self.dtype)
         
         return kmer, value
     
