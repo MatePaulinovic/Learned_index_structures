@@ -15,7 +15,7 @@ N, D_in, H, D_out = 128, 16, 8, 1
 # M = hash table size
 M = 1000
 
-dataset = Hds.HashDataset("./data/training_set/NT_113878.1.txt", M, cuda=True)
+dataset = Hds.HashDataset("./data/training_set/GRCh37/NT_113878.1.txt", M, cuda=True)
 
 train_loader = torch.utils.data.DataLoader(dataset, batch_size=N, shuffle=True, drop_last=False, num_workers=0)
 print("Loaded dataset")
@@ -39,7 +39,7 @@ for batch_idx, (data, target) in enumerate(train_loader):
     loss = criterion(output, target)
     loss.backward()
     optimizer.step()
-    if batch_idx % 10 == 0:
+    if batch_idx % 1000 == 0:
         print('Train Epoch: [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                 batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.data[0]))

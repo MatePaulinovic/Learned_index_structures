@@ -18,7 +18,8 @@ class HashNet(nn.Module):
         self.hidden1 = torch.nn.ReLU()
         self.hidden2 = torch.nn.ReLU()
         self.linear2 = torch.nn.Linear(H, D_out)
-        
+        #self.linear2 = torch.nn.Sigmoid()
+
         
     def forward(self, x):
         h_lin1 = self.linear1(x)
