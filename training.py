@@ -44,6 +44,7 @@ for batch_idx, (data, target) in enumerate(train_loader):
                 batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.data[0]))
 
+torch.save(model, "./hash_model.ser")
 """
 
 x = Variable(torch.randn(N, D_in))

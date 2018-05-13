@@ -12,7 +12,7 @@ import sys
 try:
     filePath = sys.argv[1]
     scaling = 1.0
-    if len(sys.argv) == 2:
+    if len(sys.argv) == 3:
         scaling = float(sys.argv[2])
         
     f = open(filePath, 'r')
