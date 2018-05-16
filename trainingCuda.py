@@ -15,11 +15,6 @@ N, D_in, H, D_out = 128, 16, 32, 1
 # M = hash table size
 M = 1000
 
-if(torch.cuda.is_available()):
-        print ("AVAILABLE")
-
-print(str(torch._C._cuda_isDriverSufficient()))
-
 dataset = Hds.HashDataset("./data/training_set/GRCh37/NT_113878.1.txt", M, cuda=True)
 
 train_loader = torch.utils.data.DataLoader(dataset, batch_size=N, shuffle=True, drop_last=False, num_workers=0)
