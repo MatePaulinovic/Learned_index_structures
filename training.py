@@ -6,6 +6,8 @@
 import torch
 import hashNet as Net
 import hashDataset as Hds
+import numpy
+import dataVisualisation
 from torch.autograd import Variable
 # N = batch size
 # D_in = input dimension
@@ -27,6 +29,8 @@ criterion = torch.nn.MSELoss(size_average=True)
 #optimizer = torch.optim.SGD(model.parameters(), lr=1e-5)
 optimizer = torch.optim.RMSprop(model.parameters(), lr=1e-2, alpha=0.9, momentum=0.1)
 
+batch_ids = []
+losses = []
 model.train()
 for batch_idx, (data, target) in enumerate(train_loader):
     #data, target = data.cuda(async=True), target.cuda(async=True) # On GPU
@@ -44,8 +48,12 @@ for batch_idx, (data, target) in enumerate(train_loader):
         print('Train Epoch: [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                 batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.data[0]))
+        batch_ids.append(batch_idx)
+        losses.append(loss)
+        
 
-#torch.save(model.state_dict(), "./hash_model_state_adagrad.ser")
+torch.save(model.state_dict(), "./hash_model_state_norm.ser")
+dataVisualisation.plot_loss(numpy.asarray(batch_ids, dtype=numpy.float32), numpy.asarray(losses, dtype=numpy.float32))
 """
 
 x = Variable(torch.randn(N, D_in))
