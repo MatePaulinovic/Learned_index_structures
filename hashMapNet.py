@@ -49,8 +49,15 @@ class HashMapNet():
         
     
     def hash_fun(self, key):
+        #print("racunam kljuc")
         list_key = list(key)
         x = torch.from_numpy(numpy.asarray(list_key, dtype=numpy.float32))
+        x = x.view(1, self.inputSize)
+        #print(x.size())
         x = torch.autograd.Variable(x)
-        return int(self.model.forward(x) * self.size) % self.size
+        #x = self.model.forward(x)
+        #print(x)
+        #print(type((self.model(x)[0][0]).data))
+        #print("PROSAO")
+        return int((self.model(x).data)[0][0] * self.size) % self.size
         
