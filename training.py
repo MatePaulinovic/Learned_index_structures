@@ -27,7 +27,7 @@ model = Net.HashNet(D_in, H, D_out)
 criterion = torch.nn.MSELoss(size_average=True)
 #criterion = torch.nn.L1Loss()
 #optimizer = torch.optim.SGD(model.parameters(), lr=1e-5)
-optimizer = torch.optim.RMSprop(model.parameters(), lr=1e-2, alpha=0.9, momentum=0.1)
+optimizer = torch.optim.RMSprop(model.parameters(), lr=1e-3, alpha=0.9, momentum=0.1)
 
 batch_ids = []
 losses = []
@@ -48,8 +48,8 @@ for batch_idx, (data, target) in enumerate(train_loader):
         print('Train Epoch: [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                 batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.data[0]))
-        batch_ids.append(batch_idx)
-        losses.append(loss)
+        batch_ids.append(batch_idx * len(data))
+        losses.append(loss.data[0])
         
 
 torch.save(model.state_dict(), "./hash_model_state_norm.ser")

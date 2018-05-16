@@ -3,7 +3,7 @@
 @author: matep
 """
 
-import matlplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 
 def plot_loss(batch_ids, loss):
