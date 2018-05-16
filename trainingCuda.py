@@ -11,9 +11,14 @@ from torch.autograd import Variable
 # D_in = input dimension
 # H = hidden dimension
 # D_out = output dimension
-N, D_in, H, D_out = 128, 16, 8, 1
+N, D_in, H, D_out = 128, 16, 32, 1
 # M = hash table size
 M = 1000
+
+if(torch.cuda.is_available()):
+        print ("AVAILABLE")
+
+print(str(torch._C._cuda_isDriverSufficient()))
 
 dataset = Hds.HashDataset("./data/training_set/GRCh37/NT_113878.1.txt", M, cuda=True)
 
