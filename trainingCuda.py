@@ -13,7 +13,7 @@ from torch.autograd import Variable
 # D_out = output dimension
 N, D_in, H, D_out = 128, 16, 32, 1
 # M = hash table size
-M = 1000
+M = 10e7
 
 dataset = Hds.HashDataset("./data/training_set/GRCh37/NT_113878.1.txt", M, cuda=True)
 
