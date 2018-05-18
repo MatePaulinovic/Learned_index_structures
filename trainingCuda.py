@@ -15,7 +15,7 @@ N, D_in, H, D_out = 128, 16, 32, 1
 # M = hash table size
 M = 10e7
 
-dataset = Hds.HashDataset("./data/training_set/GRCh37/NT_113878.1.txt", M, cuda=True)
+dataset = Hds.HashDataset("./data/training_set/training.txt", M, cuda=True)
 
 train_loader = torch.utils.data.DataLoader(dataset, batch_size=N, shuffle=True, drop_last=False, num_workers=0)
 print("Loaded dataset")
@@ -28,7 +28,7 @@ optimizer = torch.optim.SGD(model.parameters(), lr=1e-5)
 
 model.train().cuda()
 for batch_idx, (data, target) in enumerate(train_loader):
-    #data, target = data.cuda(async=True), target.cuda(async=True) # On GPU
+    data, target = data.cuda(async=True), target.cuda(async=True) # On GPU
     data, target = Variable(data), Variable(target)
     
     #print("batch_idx: {}".format(batch_idx))
