@@ -14,4 +14,4 @@ def plot_loss(batch_ids, loss):
     plt.title('Training loss function')
     plt.grid(True)
     plt.savefig('loss.png')
-    plt.show()
+    #plt.show()
