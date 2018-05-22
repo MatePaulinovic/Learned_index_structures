@@ -112,4 +112,4 @@ class DataPreper():
 
 
 dp = DataPreper()
-dp.prepare_file('./data/GRCh38.fna', './data/training_set/GRCh38/')
+dp.prepare_file('./data/GRCh37.fna', './data/training_set/GRCh37/')

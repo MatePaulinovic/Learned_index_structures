@@ -18,24 +18,23 @@ class HashNet(nn.Module):
         self.hidden1 = nn.Linear(H, H)
         self.hidden2 = nn.Linear(H,H)
         self.linear2 = nn.Linear(H, D_out)
-        #self.linear2 = nn.Sigmoid()
-        self.bn1 = nn.BatchNorm1d(H)
-        self.bn2 = nn.BatchNorm1d(H)
-        self.bn3 = nn.BatchNorm1d(H)
+        #self.bn1 = nn.BatchNorm1d(H)
+        #self.bn2 = nn.BatchNorm1d(H)
+        #self.bn3 = nn.BatchNorm1d(H)
         
     def forward(self, x):
         h_lin1 = F.relu(self.linear1(x))
-        h_lin1 = self.bn1(h_lin1)
+        #h_lin1 = self.bn1(h_lin1)
         h_hid1 = F.relu(self.hidden1(h_lin1))
-        h_hid1 = self.bn2(h_hid1)
+        #h_hid1 = self.bn2(h_hid1)
         h_hid2 = F.relu(self.hidden2(h_hid1))
-        h_hid2 = self.bn3(h_hid2)
-        y_pred = self.linear2(h_hid2)
+        #h_hid2 = self.bn3(h_hid2)
+        y_pred = F.sigmoid(self.linear2(h_hid2))
         return y_pred
     
     
 class ShallowHashNet(nn.Module):
-    def __init_(self, D_in, H, D_out):
+    def __init__(self, D_in, H, D_out):
         super(ShallowHashNet, self).__init__()
         
         self.linear1 = torch.nn.Linear(D_in, H)

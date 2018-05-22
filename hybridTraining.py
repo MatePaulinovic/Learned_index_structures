@@ -3,18 +3,18 @@
 @author: matep
 """
 
+import math
 import torch
 import hashNet as Net
 import hashDataset as Hds
-import numpy
-import dataVisualisation
+import RMI
 from torch.autograd import Variable
 
 
 
-def train(model, criterion, optimizer, dataloader, epochs=1, visualize=False):
-    batch_ids = []
-    losses = []
+def train(model, criterion, optimizer, dataloader, epochs): #visualize=False):
+    #batch_ids = []
+    #losses = []
     model.train()
     for batch_idx, (data, target) in enumerate(train_loader):
         #data, target = data.cuda(async=True), target.cuda(async=True) # On GPU
@@ -32,8 +32,8 @@ def train(model, criterion, optimizer, dataloader, epochs=1, visualize=False):
             print('Train Epoch: [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                     batch_idx * len(data), len(train_loader.dataset),
                     100. * batch_idx / len(train_loader), loss.data[0]))
-            batch_ids.append(batch_idx)
-            losses.append(loss)
+            #batch_ids.append(batch_idx)
+          #  losses.append(loss)
     
 
 
@@ -43,35 +43,90 @@ def train(model, criterion, optimizer, dataloader, epochs=1, visualize=False):
 # D_out = output dimension
 N, D_in, H, D_out = 128, 16, 32, 1
 # M = hash table sizenao
-M = 10e7
+M = int(1e7)
 
-dataset = Hds.HashDataset("./data/training_set/training.txt", M)
+dataset = Hds.HashCDFDataset(source="./data/training_set/GRCh37/NT_113878.1.txt", M=M)
 
 train_loader = torch.utils.data.DataLoader(dataset, batch_size=N, shuffle=True, drop_last=False, num_workers=0)
 print("Loaded dataset")
     
-stages = [1,10e5]
+stages = [int(1e5)]
+head_net_params = [D_in, H, D_out]
+child_net_params = [D_in, D_in, D_out]
+rmi = RMI.RMI(Net.HashNet, head_net_params, Net.ShallowHashNet, child_net_params, stages, M)
 
-models = [Net.HashNet(D_in, H, D_out), [ Net.ShallowHashNet(D_in, D_in, D_out) for i in range(10e5)]]
-dataSets = [dataset, [Hds.HashDataset(None, M, listSource=True)]]
+print("Stvorio RMI")
 
-for i in range(0, 2):
-    for j, model in enumerate(models[i]):
+data_dist = []
+data_dist.append([[]])
+for stage in stages:
+    data_dist.append([ [] for i in range(stage)])
+    
+data_dist[0][0] = ([i for i in range(0,len(dataset))])
+
+print("Stvorio data_dist")
+
+rmi.train()
+
+for i in range(rmi.num_of_layers):
+
+    for j, model in enumerate(rmi.layers[i]):
+        #print("VELIČINA ELEMENATA NA OVOJ STAGEU " + str(len(rmi.layers[i])))
+        print("Treniram model {} na raznini {}".format(j, i))
         criterion = torch.nn.MSELoss(size_average=True)
         optimizer = torch.optim.RMSprop(model.parameters(), lr=1e-2, alpha=0.9, momentum=0.1)
-       
-        model.train()
         
-        if i == 0:
-            train(model, criterion, optimizer, train_loader)
-            model.eval()
-            for (data, target) in train_loader:
-                p = model(Variable(data)).data[0] / stages[i+1]  
-                dataSets[i + 1][p].add_item(data, target)
+        if len(data_dist[i][j]) == 0:
+            continue
         
-        else:
-            dataloader = torch.utils.data.DataLoader(dataSets[i][j]) 
-            train(model, criterion, optimizer, dataloader, epochs=100)  
+        inputs = []
+        outputs = []
+        for valid_index in data_dist[i][j]:
+            inputs.append(dataset.xs[valid_index])
+            outputs.append(dataset.ys[valid_index])
+            
+        tmp_dataset = Hds.HashCDFDataset(source=inputs, targets=outputs, listSource=True, M=M)
+        train_loader = torch.utils.data.DataLoader(dataset=tmp_dataset, batch_size=N, shuffle=True, drop_last=False, num_workers=0)  
+        
+        train(model, criterion, optimizer, train_loader, 1000)
+        
+        model.eval()
+        if i == rmi.num_of_layers - 1:
+            continue
+        
+        for index in data_dist[i][j]:
+            data, _ = dataset[index] 
+            p = (model(Variable(data)).data[0] * rmi.layer_sizes[i+1]) 
+            data_dist[i + 1][math.floor(p)].append(index)
+        
+print("Zapisivanje")
 
-torch.save(model.state_dict(), "./hash_model_state_norm.ser")
+"""
+for data in data_dist:
+    for i, d in enumerate(data):
+        if len(d) == 0:
+            continue
+        print("{}. {}".format(i, d))
+"""
+rmi.save("./data/serialization/rmi")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
