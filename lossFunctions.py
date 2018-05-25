@@ -16,7 +16,7 @@ class MSELossWithMonotonicityPenalty(torch.nn.Module):
         
         
     def forward(self, x, y_pred, y):
-        mse = ((y_pred - y) ** 2).sum() / y_pred.data.nelement()
+        mse = torch.mean(((y_pred - y) ** 2)) 
         return mse
         self.model.eval()
         y_delta = self.model(self.increase_tensor(x))
@@ -26,7 +26,7 @@ class MSELossWithMonotonicityPenalty(torch.nn.Module):
         
         n_h = list(torch.nonzero(mon_diff).size())
         if not n_h:
-            return torch.sum(mse)
+            return torch.sum(mse).mean()
         
         mon_penalty = self.lam * (mon_diff ** 2) / n_h[0]
         #print(torch.sum(mon_penalty + mse).size())

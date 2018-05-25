@@ -4,6 +4,7 @@
 """
 
 import torch
+import os
 
 class RMI():
     
@@ -42,9 +43,27 @@ class RMI():
                 
         
     def save(self, file_start):
+        i_len = len(str(len(self.layer_sizes)))
+        j_len = max(map(lambda x: len(str(x)), self.layer_sizes))
         for i, layer in enumerate(self.layers):
             for j, model in enumerate(layer):
-                file_name = "{}_{}_{}.txt".format(file_start, i, j)
+                file_name = "{}_{:0>{i_pad}}_{:0>{j_pad}}.pth".format(file_start, i, j, i_pad=i_len, j_pad=j_len)
                 torch.save(model.state_dict(), file_name)
         
     
+    def load(self, dir_name):
+        try:
+            for filename in os.listdir(dir_name):
+                if not filename.endswith('.pth'):
+                    continue
+            
+                parts = (os.path.splitext(filename)[0]).split("_")
+                i = parts[len(parts) - 1]
+                j = parts[len(parts) - 2]
+            
+                self.layers[i][j].load_state_dict(torch.load(filename))
+    
+        except Exception as ex:
+            print("Specified wrong directory or model structure")
+            
+            

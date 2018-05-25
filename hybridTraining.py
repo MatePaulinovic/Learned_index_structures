@@ -8,6 +8,7 @@ import torch
 import hashNet as Net
 import hashDataset as Hds
 import RMI
+import lossFunctions
 from torch.autograd import Variable
 
 
@@ -26,6 +27,7 @@ def train(model, criterion, optimizer, dataloader, epochs): #visualize=False):
         output = model(data)
         #print("Output: {}, target: {}".format(output, target))
         loss = criterion(output, target)
+        #loss = criterion(data, output, target)
         loss.backward()
         optimizer.step()
         if batch_idx % 1000 == 0:
@@ -36,7 +38,7 @@ def train(model, criterion, optimizer, dataloader, epochs): #visualize=False):
           #  losses.append(loss)
     
 
-
+    
 # N = batch size
 # D_in = input dimension
 # H = hidden dimension
@@ -74,6 +76,7 @@ for i in range(rmi.num_of_layers):
         #print("VELIČINA ELEMENATA NA OVOJ STAGEU " + str(len(rmi.layers[i])))
         print("Treniram model {} na raznini {}".format(j, i))
         criterion = torch.nn.MSELoss(size_average=True)
+        #criterion = lossFunctions.MSELossWithMonotonicityPenalty(model)
         optimizer = torch.optim.RMSprop(model.parameters(), lr=1e-2, alpha=0.9, momentum=0.1)
         
         if len(data_dist[i][j]) == 0:
@@ -95,8 +98,9 @@ for i in range(rmi.num_of_layers):
             continue
         
         for index in data_dist[i][j]:
-            data, _ = dataset[index] 
-            p = (model(Variable(data)).data[0] * rmi.layer_sizes[i+1]) 
+            data, _ = dataset[index]
+            data = data.unsqueeze(0)       
+            p = (model(Variable(data)).data[0][0] * rmi.layer_sizes[i+1]) 
             data_dist[i + 1][math.floor(p)].append(index)
         
 print("Zapisivanje")
