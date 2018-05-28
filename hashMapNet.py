@@ -15,12 +15,13 @@ class HashMapNet():
         self.collisions = 0
         self.filled_slots = 0
         self.model = net
-        par = net.parameters()
+        par = net.layers[0][0].parameters()
         self.inputSize = next(par).size(1)
         
         
     def insert(self, key, value):
         key_index = self.hash_fun(key) % self.size
+        #print(type(key_index))
         bucket = self.table[key_index]
         
         if not bucket:
@@ -59,5 +60,6 @@ class HashMapNet():
         #print(x)
         #print(type((self.model(x)[0][0]).data))
         #print("PROSAO")
-        return int((self.model(x).data)[0][0] * self.size) % self.size
+        #print(type(self.model.forward(x)))
+        return int(self.model.forward(x) * self.size) % self.size
         

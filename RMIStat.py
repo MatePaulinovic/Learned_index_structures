@@ -21,15 +21,17 @@ try:
     f = open(filePath, 'r')
     fileLength = int(subprocess.check_output('wc -l {}'.format(filePath), shell=True).split()[0])
     
+    M = 1e7    
     D_in, H, D_out = 16, 32, 1
     stages = [int(1e5)]
     head_net_params = [D_in, H, D_out]
     child_net_params = [D_in, D_in, D_out]
     rmi = RMI.RMI(HashNet, head_net_params, ShallowHashNet, child_net_params, stages, M)
-    rmi.load("./data/serialization")
-    rmi.eval()
+    rmi.load("./data/serialization/")
+    print("Loaded")
+    rmi.evaluation()
     hmn = hashMapNet.HashMapNet(net=rmi, size=fileLength*scaling)
-    
+    print("Start inserting")
     counter = 0
     for line in f.readlines():
         parts = line.split(",")

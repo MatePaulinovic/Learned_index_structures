@@ -48,11 +48,12 @@ N, D_in, H, D_out = 128, 16, 32, 1
 M = int(1e7)
 
 dataset = Hds.HashCDFDataset(source="./data/training_set/training.txt", M=M)
+#dataset = Hds.HashCDFDataset(source="./data/training_set/GRCh37/NT_113878.1.txt", M=M)
 
 train_loader = torch.utils.data.DataLoader(dataset, batch_size=N, shuffle=True, drop_last=False, num_workers=0)
 print("Loaded dataset")
     
-stages = [int(1e5)]
+stages = [int(1e4)]
 head_net_params = [D_in, H, D_out]
 child_net_params = [D_in, D_in, D_out]
 rmi = RMI.RMI(Net.HashNet, head_net_params, Net.ShallowHashNet, child_net_params, stages, M)
@@ -112,7 +113,7 @@ for data in data_dist:
             continue
         print("{}. {}".format(i, d))
 """
-rmi.save("./data/serialization/rmi")
+rmi.save("./data/serialization/4k/rmi")
 
 
 
