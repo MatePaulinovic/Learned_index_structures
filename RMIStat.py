@@ -23,11 +23,13 @@ try:
     
     M = 1e7    
     D_in, H, D_out = 16, 32, 1
-    stages = [int(1e5)]
+    #stages = [int(1e5)]
+    stages = [int(1e4)]
     head_net_params = [D_in, H, D_out]
     child_net_params = [D_in, D_in, D_out]
     rmi = RMI.RMI(HashNet, head_net_params, ShallowHashNet, child_net_params, stages, M)
-    rmi.load("./data/serialization/")
+    #rmi.load("./data/serialization/")
+    rmi.load("./data/serialization/4k")
     print("Loaded")
     rmi.evaluation()
     hmn = hashMapNet.HashMapNet(net=rmi, size=fileLength*scaling)
