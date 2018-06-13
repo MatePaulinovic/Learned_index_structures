@@ -4,6 +4,7 @@
 """
 
 import fastaParser as P
+import sys
 
 class DataPreper():
     
@@ -111,5 +112,13 @@ class DataPreper():
         return self.hash_values.get(nucleotide, -1)
 
 
-dp = DataPreper()
-dp.prepare_file('./data/GRCh37.fna', './data/training_set/GRCh37/')
+if __name__ == "__main__":
+    
+    if len(sys.argv) != 3:
+        print("Passed wrong number of arguemnts")
+        exit(1)
+    
+    dp = DataPreper()
+    dp.prepare_file(sys.argv[1], sys.argv[2])
+    #dp.prepare_file('./data/GRCh37.fna', './data/training_set/GRCh37/')
+

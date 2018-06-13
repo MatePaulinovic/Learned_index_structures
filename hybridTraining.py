@@ -8,6 +8,7 @@ import torch
 import hashNet as Net
 import hashDataset as Hds
 import RMI
+import sys
 import lossFunctions
 from torch.autograd import Variable
 
@@ -47,8 +48,8 @@ N, D_in, H, D_out = 128, 16, 32, 1
 # M = hash table sizenao
 M = int(1e7)
 
-dataset = Hds.HashCDFDataset(source="./data/training_set/training.txt", M=M)
-#dataset = Hds.HashCDFDataset(source="./data/training_set/GRCh37/NT_113878.1.txt", M=M)
+#dataset = Hds.HashCDFDataset(source="./data/training_set/training.txt", M=M)
+dataset = Hds.HashCDFDataset(source=sys.argv[1], M=int(sys.argv[2]))
 
 train_loader = torch.utils.data.DataLoader(dataset, batch_size=N, shuffle=True, drop_last=False, num_workers=0)
 print("Loaded dataset")
@@ -113,8 +114,8 @@ for data in data_dist:
             continue
         print("{}. {}".format(i, d))
 """
-rmi.save("./data/serialization/4k/rmi")
-
+#rmi.save("./data/serialization/4k/rmi")
+rmi.save(sys.argv[3])
 
 
 
