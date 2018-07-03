@@ -11,7 +11,7 @@ import RMI
 import subprocess
 import sys
 import numpyRMI
-import hashMapNumpynet
+import hashMapNumpyNet
 
 
 try:
@@ -31,11 +31,11 @@ try:
     child_net_params = [D_in, D_in, D_out]
     rmi = RMI.RMI(HashNet, head_net_params, ShallowHashNet, child_net_params, stages, M)
     #rmi.load("./data/serialization/")
-    rmi.load("./data/serialization/4k")
+    rmi.load("./data/serialization/4k/")
     print("Loaded")
     rmi.evaluation()
     npRMI = numpyRMI.npRMI(rmi.layers[0][0], rmi.layers[1], M)
-    hmn = hashMapNumpynet.HashMapNumpyNet(npRMI, fileLength*scaling)
+    hmn = hashMapNumpyNet.HashMapNumpyNet(npRMI, fileLength*scaling)
     #hmn = hashMapNet.HashMapNet(net=rmi, size=fileLength*scaling)
     print("Start inserting")
     counter = 0

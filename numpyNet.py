@@ -6,6 +6,7 @@
 import numpy as np
 
 def relu(x):
+    #np.maximum(x, 0, x)
     x[x<0] =0
     return
 
@@ -24,15 +25,28 @@ class NumpyNet:
                 self.weights.append(param.data.numpy())
             
             else:
-                self.biases.append(param.data.numpy())
+                if len(param.data.numpy().shape) == 1:
+                    self.biases.append(np.expand_dims(param.data.numpy(), axis=1))
+                else:
+                    self.biases.append(param.data.numpy())
         
         
     def forward(self, x):
         x_p = x
         for i in range(len(self.weights) - 1):
-            relu(np.dot(x_p, self.weights[i]) + self.biases[i])
-            
-        return sigmoid(np.dot(x_p, self.weights[len(self.weights) - 1]) + self.biases[len(self.weights) - 1])
+            #print("Should get ", np.dot(self.weights[i], x_p).shape)
+            x_p = np.dot(self.weights[i],x_p) + self.biases[i]
+            #print("Get ", x_p.shape)
+            relu(x_p)
+            #print("weight ", i, self.weights[i].shape)
+            #print("bias ", i, self.biases[i].shape)
+            #print(len(self.biases[i].shape))
+         
+  
+        #print(x_p.shape)
+        #print(self.weights[len(self.weights) - 1].shape)
+        #print(np.dot(self.weights[len(self.weights) - 1], x_p).shape)
+        return sigmoid(np.dot(self.weights[len(self.weights) - 1], x_p) + self.biases[len(self.weights) - 1])
     
     
 class ShallowNumpyNet:
@@ -46,13 +60,15 @@ class ShallowNumpyNet:
                 self.weights.append(param.data.numpy())
             
             else:
-                self.biases.append(param.data.numpy())
-        
+                if len(param.data.numpy().shape) == 1:
+                    self.biases.append(np.expand_dims(param.data.numpy(),axis= 1))
+                else:
+                    self.biases.append(param.data.numpy())        
         
     def forward(self, x):
         x_p = x
-        x_p = np.dot(x_p, self.weights[0] + self.biases[0])
+        x_p = np.dot(self.weights[0], x_p) + self.biases[0]
             
-        return sigmoid(np.dot(x_p, self.weights[1]) + self.biases[1])
+        return np.dot(self.weights[1], x_p) + self.biases[1]
     
        

@@ -25,12 +25,14 @@ class npRMI():
     
 
     def forward(self, x):
+        #print(x.shape)
         y_pred = 0
         for i in range(self.num_of_layers):
             expert_num = abs(math.floor(y_pred * self.layer_sizes[i])) % self.layer_sizes[i]
             #print(expert_num)
-            y_pred = self.layers[i][expert_num].forward(x).data[0][0]
+            y_pred = self.layers[i][expert_num].forward(x)
             #print(type(y_pred))
+            #print(y_pred.shape)
         return y_pred
     
 

@@ -20,15 +20,15 @@ class HashMapNumpyNet():
         self.collisions = 0
         self.filled_slots = 0
         self.model = net
-        par = net.layers[0][0].parameters()
-        self.inputSize = next(par).size(1)
+        par = net.layers[0][0].weights[0].shape
+        self.inputSize = par[1]
         
         
     def insert(self, key, value):
-        key_index = self.hash_fun(key) % self.size
+        key_index = self.hash_fun(key) 
         #print(type(key_index))
         bucket = self.table[key_index]
-        
+        #print("Found bucket")
         if not bucket:
             self.filled_slots += 1
             bucket.append((key, value))
@@ -57,7 +57,7 @@ class HashMapNumpyNet():
     def hash_fun(self, key):
         #print("racunam kljuc")
         list_key = list(key)
-        x = numpy.asarray(list_key, dtype=numpy.float32)
+        x = numpy.expand_dims(numpy.asarray(list_key, dtype=numpy.float32), axis=1)
         #print(x.size()
         #x = self.model.forward(x)
         #print(x)
